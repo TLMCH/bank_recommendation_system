@@ -164,3 +164,7 @@ cython_debug/
 old/
 .vscode/
 .DS_Store
+
+# Уникальные для этого проекта файлы
+.venv_final
+data
