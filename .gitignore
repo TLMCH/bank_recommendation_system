@@ -168,3 +168,6 @@ old/
 # Уникальные для этого проекта файлы
 .venv_final
 data
+models_and_recommendations
+catboost_info
+mlruns
