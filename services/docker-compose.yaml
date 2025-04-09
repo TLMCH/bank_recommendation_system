@@ -1,0 +1,55 @@
+services:
+  recs-app:  
+    #используем файл с переменными среды
+    env_file:
+      - ./.env
+    # собираем образ с помощью Dockerfile
+    build:
+      dockerfile: Dockerfile_ml_service
+    # перенаправялем порты
+    ports:
+      - "${APP_PORT_VM}:${APP_PORT}"
+    volumes:
+        # тип тома 
+      - type: bind
+        # директория на ВМ
+        source: ./recs
+        # директория в контейнере
+        target: /recs_app/recs
+    hostname: recs_app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    volumes:
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    hostname: prometheus
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+ 
+
+  grafana:
+    image: grafana/grafana
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASS}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

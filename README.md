@@ -2,28 +2,40 @@
 
 Обновление локального индекса пакетов:
 
-- sudo apt-get update
+```
+sudo apt-get update
+```
 
 Установка расширения для виртуального пространства:
 
-- sudo apt-get install python3.10-venv
+```
+sudo apt-get install python3.10-venv
+```
 
 Создание виртуального пространства:
 
-- python3.10 -m venv .venv_project_name
+```
+python3.10 -m venv .venv_project_name
+```
 
 Запуск виртуального пространства:
 
-- source .venv_project_name/bin/activate
+```
+source .venv_project_name/bin/activate
+```
 
 Установка библиотек:
 
-- pip install -r requirements.txt
+```
+pip install -r requirements.txt
+```
 
 
 #### Для загрузки данных выполните в терминале код:
 
-- python3 download_dataset.py
+```
+python3 download_dataset.py
+```
 
 
 ### Выводы по EDA
@@ -69,7 +81,9 @@
 
 Скрипт для запска MLflow находится в файле run_mlflow_server.sh. Для его запуска нужно ввести команду:
 
-- sh run_mlflow_server.sh
+```
+sh run_mlflow_server.sh
+```
 
 
 ### Метрики и способы решения задачи
@@ -90,6 +104,45 @@
 
 Модель оказалась точной, а рекомендаций покрывают 100% продуктов банка, при этом достаточно часто рекомендуют пользователям новые продукты.
 
-Файлы с моделями и рекомендациями хранятся в папке models_and_recommendations.
+Файлы с моделями и рекомендациями хранятся в папке models_and_recommendations. Файлы с финальными рекомендациями и топом популярных лежат по пути services/recs. Такое размещение выбрано для дальнейшего использования рекомендаций в сервисе.
 
 Название эксперимента в MLflow - Bank_recommendations
+
+
+### Продуктивизация
+
+Все файлы для работы с сервисом находятся в папке services.
+
+Код с веб-сервисом находится в файле recommendation_service.py, а класс для выдачи рекомендаций в файле recommendations.py. 
+
+POST-запрос "/recommendations" принимает на вход два параметра: user_id и k. Параметр k отвечает за количество рекомендуемых продуктов (ставить значение больше 5 не имеет смысла, так как персональные рекомендации ограничены именно этим значением). 
+
+Команда перехода в нужную директорию:
+
+```
+cd services
+```
+
+Команда для запуска микросервиса в режиме docker compose:
+
+```
+docker compose up --build
+```
+
+Запуск скрипта для симуляции нагрузки (генерируются 5 запросов в течение 105 секунд):
+
+```
+python3 test_requsts.py
+```
+
+Адреса сервисов:
+- микросервис: http://localhost:4601
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000
+
+
+### Мониторинг
+
+Метрики описаны в файле Monitoring.md.
+
+В файле services/dashboard.json находится конфигурация дашборда в Grafana.

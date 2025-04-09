@@ -171,3 +171,4 @@ data
 models_and_recommendations
 catboost_info
 mlruns
+recs

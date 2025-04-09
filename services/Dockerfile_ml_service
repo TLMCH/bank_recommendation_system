@@ -1,0 +1,7 @@
+FROM python:3.11-slim
+COPY . ./recs_app
+WORKDIR recs_app 
+RUN pip3 install -r requirements.txt
+EXPOSE ${APP_PORT}
+VOLUME /recs
+CMD uvicorn recommendation_service:app --reload --port ${APP_PORT} --host 0.0.0.0
